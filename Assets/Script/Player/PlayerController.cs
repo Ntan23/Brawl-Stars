@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,7 +7,7 @@ public class PlayerController : MonoBehaviour
 {
     #region EnumVariables
     private enum State {
-        Idle, Walking
+        Idle, Walking, Shooting
     }
 
     private State state;
@@ -29,22 +30,42 @@ public class PlayerController : MonoBehaviour
 
     #region BoolVariables
     private bool canMove;
+    private bool canShoot = true;
+    private bool isShooting = false;
+    #endregion
+
+    #region IntegerVariables
+    [SerializeField] private int bulletAmount;
     #endregion
 
     #region OtherVariables
     private GameInputManager gameInputManager;
     [SerializeField] private Transform playerPositionIndicatorTransform;
+    [SerializeField] private Transform bullet;
+    [SerializeField] private Transform shootPosition;
     private CollisionDetector collisionDetector;
     private PlayerAnimationControl playerAnimationControl;
+    private AttackTrail attackTrail;
+    private ObjectPoolManager objectPoolManager;
     #endregion
 
     void Start()
     {
         gameInputManager = GameInputManager.Instance;    
+        objectPoolManager = ObjectPoolManager.Instance;
+
         collisionDetector = GetComponent<CollisionDetector>();
         playerAnimationControl = GetComponentInChildren<PlayerAnimationControl>();
+        attackTrail = GetComponentInChildren<AttackTrail>();
 
         state = State.Idle;
+
+        gameInputManager.OnShootAction += GameInput_OnShootAction;
+    }
+
+    private void GameInput_OnShootAction(object sender, EventArgs e)
+    {
+        Shoot();
     }
 
     void Update()
@@ -81,10 +102,39 @@ public class PlayerController : MonoBehaviour
             transform.position += moveDirection * moveDistance;
 
             if(moveDirection != Vector3.zero) state = State.Walking;
+            if(moveDirection != Vector3.zero && isShooting) state = State.Shooting;
+            if(moveDirection == Vector3.zero && isShooting) state = State.Shooting;
             else if(moveDirection == Vector3.zero) state = State.Idle;
         }
-      
-        transform.forward += Vector3.Slerp(transform.forward, moveDirection, rotateSpeed * Time.deltaTime);
+
+        if(!attackTrail.InAttackMode()) transform.forward += Vector3.Slerp(transform.forward, moveDirection, rotateSpeed * Time.deltaTime);
+        else if(attackTrail.InAttackMode()) transform.forward += Vector3.Slerp(transform.forward, attackTrail.GetShootDirection(), rotateSpeed * Time.deltaTime);
+    }
+
+    void Shoot()
+    {
+        if(attackTrail.InAttackMode() && canShoot) 
+        {
+            isShooting = true;
+            StartCoroutine(ShootBullet());
+            canShoot = false;
+        }
+    }
+
+    IEnumerator ShootBullet()
+    {
+        GameObject bullet = null;
+
+        for(int i = 0; i < bulletAmount; i++)
+        {
+            bullet = objectPoolManager.GetPooledObject();
+            bullet.SetActive(true);
+            yield return new WaitForSeconds(0.1f);
+        }
+
+        isShooting = false;
+        yield return new WaitForSeconds(0.5f);
+        canShoot = true;
     }
 
     public float GetPlayerHeight()

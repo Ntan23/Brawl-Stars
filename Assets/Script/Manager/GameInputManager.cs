@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,6 +14,10 @@ public class GameInputManager : MonoBehaviour
     }
     #endregion
 
+    #region ForEvent
+    public event EventHandler OnShootAction;
+    #endregion
+
     private PlayerInput playerInput;
     private Vector2 inputVector;
 
@@ -20,8 +25,15 @@ public class GameInputManager : MonoBehaviour
     void Start()
     {
         playerInput = new PlayerInput();
-        playerInput.Player.Enable();    
+        playerInput.Player.Enable(); 
+
+        playerInput.Player.Shoot.performed += Shoot_Performed; 
     }
+
+    private void Shoot_Performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+        OnShootAction?.Invoke(this, EventArgs.Empty);
+    }   
 
     public Vector2 GetMovementVectorNormalized()
     {
@@ -34,7 +46,7 @@ public class GameInputManager : MonoBehaviour
 
     public Vector2 GetAttackVectorNormalized()
     {
-        Vector2 inputVector = playerInput.Player.Attack.ReadValue<Vector2>();
+        Vector2 inputVector = playerInput.Player.Aim.ReadValue<Vector2>();
 
         inputVector = inputVector.normalized;
 

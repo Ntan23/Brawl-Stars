@@ -15,10 +15,19 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "Attack",
+                    "name": "Aim",
                     "type": "Value",
                     "id": "6a2d5f6a-624f-4f7e-9831-700080296677",
                     "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
+                    "name": "Shoot",
+                    "type": "Value",
+                    "id": "3522b3c6-bd74-415b-9db1-a363dccc588b",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
@@ -81,13 +90,24 @@
                     "isPartOfComposite": true
                 },
                 {
-                    "name": "Attack",
+                    "name": "",
+                    "id": "ea71f5d8-06ba-44e8-961f-204384b76b87",
+                    "path": "<Gamepad>/leftStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Movement",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "Attack Trail",
                     "id": "e8742a6c-daf8-4123-8025-a7054b9ebd7c",
                     "path": "2DVector",
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "Aim",
                     "isComposite": true,
                     "isPartOfComposite": false
                 },
@@ -98,7 +118,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -109,7 +129,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -120,7 +140,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": true
                 },
@@ -131,9 +151,31 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "Attack",
+                    "action": "Aim",
                     "isComposite": false,
                     "isPartOfComposite": true
+                },
+                {
+                    "name": "",
+                    "id": "89945d19-47d5-4ebb-a26d-a782629410be",
+                    "path": "<Gamepad>/rightStick",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Aim",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
+                    "id": "23f65ebf-eb5d-4e3e-abae-783faa90205f",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Shoot",
+                    "isComposite": false,
+                    "isPartOfComposite": false
                 }
             ]
         }

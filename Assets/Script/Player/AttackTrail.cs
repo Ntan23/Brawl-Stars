@@ -5,18 +5,18 @@ using UnityEngine;
 public class AttackTrail : MonoBehaviour
 {
     #region FloatVariables
-    private float lineDistance = 1.0f;
+    [SerializeField] private float lineDistance = 10.0f;
     [SerializeField] private float rotateSpeed;
     #endregion
 
     #region VectorVariables
     private Vector2 inputVector;
-    private Vector3 attackDirection;
-    private Vector3 attackDistance;
+    private Vector3 shootDirection;
     #endregion
 
     #region OtherRegion
-    [SerializeField] private LineRenderer lineRenderer;
+    private LineRenderer lineRenderer;
+    [SerializeField] private GameObject player;
     private RaycastHit hit;
     private GameInputManager gameInputManager;
     #endregion
@@ -25,6 +25,7 @@ public class AttackTrail : MonoBehaviour
     void Start()
     {
         gameInputManager = GameInputManager.Instance;
+        lineRenderer = GetComponent<LineRenderer>();
     }
 
     // Update is called once per frame
@@ -37,23 +38,36 @@ public class AttackTrail : MonoBehaviour
     {
         inputVector = gameInputManager.GetAttackVectorNormalized();
 
-        attackDirection = new Vector3(inputVector.x, 0f, inputVector.y);
+        shootDirection = new Vector3(inputVector.x, 0f, inputVector.y);
         
-        if(attackDirection.x < 0 || attackDirection.x > 0 || attackDirection.z < 0 || attackDirection.z > 0)
+        if(inputVector != Vector2.zero)
         {
-            if(!lineRenderer.gameObject.activeInHierarchy) lineRenderer.gameObject.SetActive(true);
+            lineRenderer.enabled = true;
 
+            transform.position = new Vector3(player.transform.position.x, 0.1f, player.transform.position.z);
+            
             lineRenderer.SetPosition(0, transform.position);
 
             if(Physics.Raycast(transform.position, transform.forward, out hit, lineDistance)) lineRenderer.SetPosition(1, hit.point);
-            else 
-            {
-                lineRenderer.SetPosition(1, transform.forward * lineDistance);
-            }
-      
-            lineRenderer.transform.forward += Vector3.Slerp(lineRenderer.transform.forward, attackDirection, rotateSpeed * Time.deltaTime);
+            else lineRenderer.SetPosition(1, transform.position + transform.forward * lineDistance);
+            
+            transform.forward += Vector3.Slerp(transform.forward, shootDirection, rotateSpeed * Time.deltaTime);
         }
-        else lineRenderer.gameObject.SetActive(false);
-        
+        else if(inputVector == Vector2.zero) lineRenderer.enabled = false;   
+    }
+
+    public bool InAttackMode()
+    {
+        return gameInputManager.GetAttackVectorNormalized() != Vector2.zero;
+    }
+
+    public Vector3 GetShootDirection()
+    {
+        return shootDirection;
+    }
+
+    public float GetLineDistance()
+    {
+        return lineDistance;
     }
 }
