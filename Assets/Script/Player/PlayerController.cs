@@ -42,7 +42,6 @@ public class PlayerController : MonoBehaviour
     private GameInputManager gameInputManager;
     [SerializeField] private Transform playerPositionIndicatorTransform;
     [SerializeField] private Transform bullet;
-    [SerializeField] private Transform shootPosition;
     private CollisionDetector collisionDetector;
     private PlayerAnimationControl playerAnimationControl;
     private AttackTrail attackTrail;
@@ -116,7 +115,10 @@ public class PlayerController : MonoBehaviour
         if(attackTrail.InAttackMode() && canShoot) 
         {
             isShooting = true;
-            StartCoroutine(ShootBullet());
+
+            if(attackTrail.ShootMode()) StartCoroutine(ShootBullet());
+            if(attackTrail.ThrowMode()) StartCoroutine(ThrowBullet());
+
             canShoot = false;
         }
     }
@@ -127,13 +129,23 @@ public class PlayerController : MonoBehaviour
 
         for(int i = 0; i < bulletAmount; i++)
         {
-            bullet = objectPoolManager.GetPooledObject();
+            bullet = objectPoolManager.GetPooledObject("BulletShoot");
             bullet.SetActive(true);
             yield return new WaitForSeconds(0.1f);
         }
 
         isShooting = false;
         yield return new WaitForSeconds(0.5f);
+        canShoot = true;
+    }
+
+    IEnumerator ThrowBullet()
+    {
+        GameObject bullet = objectPoolManager.GetPooledObject("BulletThrow");
+        bullet.SetActive(true);
+
+        yield return new WaitForSeconds(0.5f);
+        isShooting = false;
         canShoot = true;
     }
 

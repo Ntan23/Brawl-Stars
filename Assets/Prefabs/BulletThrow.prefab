@@ -15,8 +15,8 @@ GameObject:
   - component: {fileID: 2734895986856926888}
   - component: {fileID: 2734895986856926892}
   m_Layer: 0
-  m_Name: Bullet
-  m_TagString: BulletShoot
+  m_Name: BulletThrow
+  m_TagString: BulletThrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -30,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 2734895986856926889}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.1, y: 0.1, z: 0.1}
+  m_LocalScale: {x: 0.3, y: 0.3, z: 0.3}
   m_ConstrainProportionsScale: 1
   m_Children: []
   m_Father: {fileID: 0}
@@ -64,7 +64,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 33c4237cfaee6214899fa743f7ddf8b4, type: 2}
+  - {fileID: 2100000, guid: f21ef680ececfd64a9ecb3154f3d84b6, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -98,7 +98,7 @@ Rigidbody:
   m_Drag: 0
   m_AngularDrag: 0.05
   m_UseGravity: 0
-  m_IsKinematic: 1
+  m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 1
@@ -127,4 +127,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 46bc58e085aec894e915ed69555c992f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletType: 1
   speed: 10

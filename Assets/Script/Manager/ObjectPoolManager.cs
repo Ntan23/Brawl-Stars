@@ -30,24 +30,24 @@ public class ObjectPoolManager : MonoBehaviour
     #endregion
 
     void Start() 
-    {
+    { 
         foreach(Pool item in itemsToPool) 
         {
             for(int i = 0; i < item.amountToPool; i++) 
             {
                 GameObject obj = Instantiate(item.objectToPool, bulletParent);
-
+                
                 obj.SetActive(false);
                 pooledObjects.Add(obj);
             }
         }
     }
 	
-    public GameObject GetPooledObject() 
+    public GameObject GetPooledObject(string tag) 
     {
         for(int i = 0 ; i < pooledObjects.Count; i++) 
         {
-            if(!pooledObjects[i].activeInHierarchy) 
+            if(!pooledObjects[i].activeInHierarchy && pooledObjects[i].CompareTag(tag)) 
             {
                 return pooledObjects[i];
             }
@@ -69,6 +69,7 @@ public class ObjectPoolManager : MonoBehaviour
 
     public Transform GetBulletSpawnPosition()
     {
+        if(bulletSpawnPosition == null) bulletSpawnPosition = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CapsuleCollider>().transform;
         return bulletSpawnPosition;
     }
 }
