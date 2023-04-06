@@ -26,7 +26,7 @@ public class ObjectPoolManager : MonoBehaviour
     public List<Pool> itemsToPool;
     private List<GameObject> pooledObjects = new List<GameObject>();
     [SerializeField] private Transform bulletParent;
-    [SerializeField] private Transform bulletSpawnPosition;
+    private Transform bulletSpawnPosition;
     #endregion
 
     void Start() 
@@ -67,9 +67,16 @@ public class ObjectPoolManager : MonoBehaviour
         return null;
     }
 
-    public Transform GetBulletSpawnPosition()
+    public Transform GetBulletSpawnPositionForPlayer1()
     {
-        if(bulletSpawnPosition == null) bulletSpawnPosition = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CapsuleCollider>().transform;
+        if(GameObject.FindGameObjectWithTag("Player") != null) bulletSpawnPosition = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<CapsuleCollider>().transform;
+        
+        return bulletSpawnPosition;
+    }
+
+    public Transform GetBulletSpawnPositionForPlayer2()
+    {
+        if(GameObject.FindGameObjectWithTag("Player2") != null) bulletSpawnPosition = GameObject.FindGameObjectWithTag("Player2").GetComponentInChildren<CapsuleCollider>().transform;
         return bulletSpawnPosition;
     }
 }

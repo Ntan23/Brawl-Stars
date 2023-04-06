@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class PlayerController : MonoBehaviour
 {
@@ -39,9 +40,10 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region OtherVariables
-    private GameInputManager gameInputManager;
     [SerializeField] private Transform playerPositionIndicatorTransform;
     [SerializeField] private Transform bullet;
+    [SerializeField] private GameObject shootBullet;
+    [SerializeField] private GameObject throwBullet;
     private CollisionDetector collisionDetector;
     private PlayerAnimationControl playerAnimationControl;
     private AttackTrail attackTrail;
@@ -49,8 +51,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     void Start()
-    {
-        gameInputManager = GameInputManager.Instance;    
+    {  
         objectPoolManager = ObjectPoolManager.Instance;
 
         collisionDetector = GetComponent<CollisionDetector>();
@@ -58,13 +59,6 @@ public class PlayerController : MonoBehaviour
         attackTrail = GetComponentInChildren<AttackTrail>();
 
         state = State.Idle;
-
-        gameInputManager.OnShootAction += GameInput_OnShootAction;
-    }
-
-    private void GameInput_OnShootAction(object sender, EventArgs e)
-    {
-        Shoot();
     }
 
     void Update()
@@ -74,12 +68,10 @@ public class PlayerController : MonoBehaviour
 
     void MoveAndRotate()
     {
-        inputVector = gameInputManager.GetMovementVectorNormalized();
-
-        moveDirection = new Vector3(inputVector.x, 0f, inputVector.y);
+        moveDirection = new Vector3(inputVector.normalized.x, 0f, inputVector.normalized.y);
         moveDistance = speed * Time.deltaTime;
 
-        canMove = collisionDetector.DetectCollision(moveDirection);
+        if(collisionDetector != null) canMove = collisionDetector.DetectCollision(moveDirection);
         
         if(!canMove)
         {
@@ -112,16 +104,34 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
-        if(attackTrail.InAttackMode() && canShoot) 
+        if(attackTrail != null)
         {
-            isShooting = true;
+            if(attackTrail.InAttackMode() && canShoot) 
+            {
+                isShooting = true;
 
-            if(attackTrail.ShootMode()) StartCoroutine(ShootBullet());
-            if(attackTrail.ThrowMode()) StartCoroutine(ThrowBullet());
+                if(attackTrail.ShootMode()) StartCoroutine(ShootBullet());
+                if(attackTrail.ThrowMode()) StartCoroutine(ThrowBullet());
 
-            canShoot = false;
+                canShoot = false;
+            }
         }
     }
+
+    public void OnMove(InputAction.CallbackContext ctx)
+    {
+        inputVector = ctx.ReadValue<Vector2>();
+    } 
+
+    public void OnShoot(InputAction.CallbackContext ctx)
+    {
+        ctx.action.performed += OnShoot_Performed;
+    }
+
+    private void OnShoot_Performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
+    {
+       Shoot();
+    }   
 
     IEnumerator ShootBullet()
     {
@@ -131,6 +141,8 @@ public class PlayerController : MonoBehaviour
         {
             bullet = objectPoolManager.GetPooledObject("BulletShoot");
             bullet.SetActive(true);
+
+            //Instantiate(shootBullet);
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -143,7 +155,7 @@ public class PlayerController : MonoBehaviour
     {
         GameObject bullet = objectPoolManager.GetPooledObject("BulletThrow");
         bullet.SetActive(true);
-
+        //Instantiate(throwBullet);
         yield return new WaitForSeconds(0.5f);
         isShooting = false;
         canShoot = true;

@@ -73,11 +73,12 @@ public class Bullet : MonoBehaviour
 
     #region BoolVariables
     private bool firstTimeRun = true;
+    private bool firstTimeActive = true;
     #endregion
 
     #region OtherVariables
     private Vector3 shootDirection;
-    private Vector3[] bulletPoints;
+    private Vector3[] bulletPoints = new Vector3[9];
     private AttackTrail attackTrail;
     private ObjectPoolManager objectPoolManager;
     private Rigidbody rb;
@@ -86,6 +87,7 @@ public class Bullet : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        objectPoolManager = ObjectPoolManager.Instance;
 
         shootBullet = new ShootBullet();
         throwBullet = new ThrowBullet();
@@ -93,20 +95,31 @@ public class Bullet : MonoBehaviour
 
     void OnEnable()
     {
-        if(attackTrail == null) attackTrail = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<AttackTrail>();
         if(objectPoolManager == null) objectPoolManager = ObjectPoolManager.Instance;
 
-        if(bulletPoints == null) bulletPoints = new Vector3[9];
+        if(!firstTimeActive)
+        {
+            if(bulletType == Type.Shoot)
+            {
+                attackTrail = GameObject.FindGameObjectWithTag("Player2").GetComponentInChildren<AttackTrail>();
+                transform.position = objectPoolManager.GetBulletSpawnPositionForPlayer2().position;
+                shootDirection = attackTrail.GetShootDirection();
+            }
 
-        shootDirection = attackTrail.GetShootDirection();
-        transform.position = objectPoolManager.GetBulletSpawnPosition().position;
-
-        if(attackTrail.GetBulletPointsForThrow() != null) attackTrail.GetBulletPointsForThrow().CopyTo(bulletPoints, 0);
+            if(bulletType == Type.Throw)
+            {
+                attackTrail = GameObject.FindGameObjectWithTag("Player").GetComponentInChildren<AttackTrail>();
+                transform.position = objectPoolManager.GetBulletSpawnPositionForPlayer1().position;
+                attackTrail.GetBulletPointsForThrow().CopyTo(bulletPoints, 0);
+            }
+        }
     }
 
     void OnDisable()
     {
         firstTimeRun = true;
+
+        if(firstTimeActive) firstTimeActive = false;
     }
 
     void Update()

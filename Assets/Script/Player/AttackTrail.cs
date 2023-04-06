@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public interface IShootAttackTrail
 {
@@ -90,68 +91,51 @@ public class AttackTrail : MonoBehaviour
     #region VectorVariables
     private Vector2 inputVector;
     private Vector3 shootDirection;
-    private Vector3[] bulletPoints;
+    private Vector3[] bulletPoints = new Vector3[9];
     #endregion
 
-    #region OtherRegion
+    #region BoolVariables
+    #endregion
+
+    #region OtherVariables
     private LineRenderer lineRenderer;
     [Header("Player References")]
     [SerializeField] private GameObject player;
-    private GameInputManager gameInputManager;
     #endregion
 
     void Start()
     {   
-        gameInputManager = GameInputManager.Instance;
         lineRenderer = GetComponent<LineRenderer>();
 
         shootAttackTrail = new ShootAttackTrail();
         throwAttackTrail = new ThrowAttackTrail();
-
-        bulletPoints = new Vector3[9];
     }
 
     void Update()
     {
         if(mode == Mode.Shoot) 
         {
-            inputVector = gameInputManager.GetShootAimVectorNormalized();
-            shootDirection = new Vector3(inputVector.x, 0f, inputVector.y);
+            shootDirection = new Vector3(inputVector.normalized.x, 0f, inputVector.normalized.y);
 
             shootAttackTrail.Aim(lineRenderer, inputVector, shootDirection, transform, player, lineDistance, rotateSpeed);
         }
     
         if(mode == Mode.Throw) 
         {
-            inputVector = gameInputManager.GetThrowAimVector();
             shootDirection = new Vector3(inputVector.x, 0f, inputVector.y);
 
             throwAttackTrail.Aim(lineRenderer, inputVector, shootDirection, bulletPoints, transform, player, YLinePower, rotateSpeed);
         }
     }
 
-    // public void CheckMode()
-    // {
-    //     if(mode == Mode.Shoot) 
-    //     {
-    //         inputVector = gameInputManager.GetShootAimVectorNormalizedForPlayer1();
-    //         shootDirection = new Vector3(inputVector.x, 0f, inputVector.y);
-
-    //         shootAttackTrail.Aim(lineRenderer, inputVector, shootDirection, transform, player, lineDistance, rotateSpeed);
-    //     }
-    
-    //     if(mode == Mode.Throw) 
-    //     {
-    //         inputVector = gameInputManager.GetThrowAimVectorForPlayer1();
-    //         shootDirection = new Vector3(inputVector.x, 0f, inputVector.y);
-
-    //         throwAttackTrail.Aim(lineRenderer, inputVector, shootDirection, bulletPoints, transform, player, YLinePower, rotateSpeed);
-    //     }
-    // }
+    public void OnAim(InputAction.CallbackContext ctx)
+    {
+        inputVector = ctx.ReadValue<Vector2>();
+    }
 
     public bool InAttackMode()
     {
-        return gameInputManager.GetShootAimVectorNormalized() != Vector2.zero || gameInputManager.GetThrowAimVector() != Vector2.zero;
+        return inputVector != Vector2.zero;
     }
 
     public Vector3 GetShootDirection()
