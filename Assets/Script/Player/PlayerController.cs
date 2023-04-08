@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region IntegerVariables
+    [Header("For Shoot Only")]
     [SerializeField] private int bulletAmount;
     #endregion
 
@@ -147,7 +148,7 @@ public class PlayerController : MonoBehaviour
         }
 
         isShooting = false;
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
         canShoot = true;
     }
 
@@ -156,7 +157,7 @@ public class PlayerController : MonoBehaviour
         GameObject bullet = objectPoolManager.GetPooledObject("BulletThrow");
         bullet.SetActive(true);
         //Instantiate(throwBullet);
-        yield return new WaitForSeconds(0.5f);
+        yield return new WaitForSeconds(1.0f);
         isShooting = false;
         canShoot = true;
     }

@@ -68,6 +68,7 @@ public class Bullet : MonoBehaviour
 
     #region FloatVariables
     [SerializeField] private float speed;
+    [SerializeField] private float damage;
     private float timer;
     #endregion
 
@@ -82,12 +83,14 @@ public class Bullet : MonoBehaviour
     private AttackTrail attackTrail;
     private ObjectPoolManager objectPoolManager;
     private Rigidbody rb;
+    private GameManager gm;
     #endregion
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         objectPoolManager = ObjectPoolManager.Instance;
+        gm = GameManager.Instance;
 
         shootBullet = new ShootBullet();
         throwBullet = new ThrowBullet();
@@ -146,5 +149,19 @@ public class Bullet : MonoBehaviour
     void OnCollisionEnter(Collision collisionInfo)
     {
         if(collisionInfo.gameObject.CompareTag("CanBeHit")) gameObject.SetActive(false);
+    }
+
+    void OnTriggerEnter(Collider other)
+    {
+        if(other.CompareTag("Player") && bulletType == Type.Shoot) 
+        {
+            gm.DecreasePlayerHealth(1, damage);
+            gameObject.SetActive(false);
+        }
+        if(other.CompareTag("Player2") && bulletType == Type.Throw) 
+        {
+            gm.DecreasePlayerHealth(2, damage);
+            gameObject.SetActive(false);
+        }
     }
 }
