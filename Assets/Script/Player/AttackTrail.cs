@@ -101,10 +101,12 @@ public class AttackTrail : MonoBehaviour
     private LineRenderer lineRenderer;
     [Header("Player References")]
     [SerializeField] private GameObject player;
+    private GameManager gm;
     #endregion
 
     void Start()
     {   
+        gm = GameManager.Instance;
         lineRenderer = GetComponent<LineRenderer>();
 
         shootAttackTrail = new ShootAttackTrail();
@@ -113,18 +115,21 @@ public class AttackTrail : MonoBehaviour
 
     void Update()
     {
-        if(mode == Mode.Shoot) 
+        if(gm.IsPlaying())
         {
-            shootDirection = new Vector3(inputVector.normalized.x, 0f, inputVector.normalized.y);
+            if(mode == Mode.Shoot) 
+            {
+                shootDirection = new Vector3(inputVector.normalized.x, 0f, inputVector.normalized.y);
 
-            shootAttackTrail.Aim(lineRenderer, inputVector, shootDirection, transform, player, lineDistance, rotateSpeed);
-        }
-    
-        if(mode == Mode.Throw) 
-        {
-            shootDirection = new Vector3(inputVector.x, 0f, inputVector.y);
+                shootAttackTrail.Aim(lineRenderer, inputVector, shootDirection, transform, player, lineDistance, rotateSpeed);
+            }
+        
+            if(mode == Mode.Throw) 
+            {
+                shootDirection = new Vector3(inputVector.x, 0f, inputVector.y);
 
-            throwAttackTrail.Aim(lineRenderer, inputVector, shootDirection, bulletPoints, transform, player, YLinePower, rotateSpeed);
+                throwAttackTrail.Aim(lineRenderer, inputVector, shootDirection, bulletPoints, transform, player, YLinePower, rotateSpeed);
+            }
         }
     }
 

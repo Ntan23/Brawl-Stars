@@ -49,11 +49,13 @@ public class PlayerController : MonoBehaviour
     private PlayerAnimationControl playerAnimationControl;
     private AttackTrail attackTrail;
     private ObjectPoolManager objectPoolManager;
+    private GameManager gm;
     #endregion
 
     void Start()
     {  
         objectPoolManager = ObjectPoolManager.Instance;
+        gm = GameManager.Instance;
 
         collisionDetector = GetComponent<CollisionDetector>();
         playerAnimationControl = GetComponentInChildren<PlayerAnimationControl>();
@@ -64,7 +66,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
-        MoveAndRotate();
+        if(gm.IsPlaying()) MoveAndRotate();
     }
 
     void MoveAndRotate()
@@ -105,7 +107,7 @@ public class PlayerController : MonoBehaviour
 
     void Shoot()
     {
-        if(attackTrail != null)
+        if(gm.IsPlaying())
         {
             if(attackTrail.InAttackMode() && canShoot) 
             {

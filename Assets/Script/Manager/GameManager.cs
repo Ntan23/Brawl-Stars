@@ -13,10 +13,19 @@ public class GameManager : MonoBehaviour
     }
     #endregion
 
+    #region EnumVariables
+    private enum State {
+        IsPlaying, GameOver
+    }
+
+    private State gameState;
+    #endregion
+
     private float player1Heath;
     private float player2Health;
     private int playerJoinCount;
     [SerializeField] private HealthBarUI healthBarUI;
+    [SerializeField] private PlayerWinUI[] playerWinUI;
 
     void Start()
     {
@@ -25,6 +34,7 @@ public class GameManager : MonoBehaviour
 
         playerJoinCount = 0;
 
+        gameState = State.IsPlaying;
         healthBarUI.HideAll();
     }
 
@@ -39,8 +49,24 @@ public class GameManager : MonoBehaviour
 
     void CheckWhoWin()
     {
-        if(player1Heath <= 0) Debug.Log("Player 2 Win");
-        if(player2Health <= 0) Debug.Log("Player 1 Win");
+        if(player2Health <= 0)
+        {
+            playerWinUI[0].ShowWinUI();
+            gameState = State.GameOver;
+        } 
+
+        if(player1Heath <= 0) 
+        {
+            playerWinUI[1].ShowWinUI();
+            
+            gameState = State.GameOver;
+        }
+        
+        if(player1Heath <= 0 && player2Health <= 0) 
+        {
+            Debug.Log("Draw");
+            gameState = State.GameOver;
+        }
     }
 
     public float GetPlayerHealth(int playerIndex)
@@ -58,5 +84,10 @@ public class GameManager : MonoBehaviour
 
         if(playerJoinCount == 1) healthBarUI.HidePlayer2HealthBar();
         if(playerJoinCount == 2) healthBarUI.ShowPlayer2HealthBar();
+    }
+
+    public bool IsPlaying()
+    {
+        return gameState == State.IsPlaying;
     }
 }
