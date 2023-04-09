@@ -50,12 +50,14 @@ public class PlayerController : MonoBehaviour
     private AttackTrail attackTrail;
     private ObjectPoolManager objectPoolManager;
     private GameManager gm;
+    private AudioManager audioManager;
     #endregion
 
     void Start()
     {  
         objectPoolManager = ObjectPoolManager.Instance;
         gm = GameManager.Instance;
+        audioManager = AudioManager.Instance;
 
         collisionDetector = GetComponent<CollisionDetector>();
         playerAnimationControl = GetComponentInChildren<PlayerAnimationControl>();
@@ -121,31 +123,23 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    public void OnMove(InputAction.CallbackContext ctx)
-    {
-        inputVector = ctx.ReadValue<Vector2>();
-    } 
+    public void OnMove(InputAction.CallbackContext ctx) => inputVector = ctx.ReadValue<Vector2>();
 
-    public void OnShoot(InputAction.CallbackContext ctx)
-    {
-        ctx.action.performed += OnShoot_Performed;
-    }
+    public void OnShoot(InputAction.CallbackContext ctx) => ctx.action.performed += OnShoot_Performed;
 
-    private void OnShoot_Performed(UnityEngine.InputSystem.InputAction.CallbackContext obj)
-    {
-       Shoot();
-    }   
+    private void OnShoot_Performed(UnityEngine.InputSystem.InputAction.CallbackContext obj) => Shoot();
 
     IEnumerator ShootBullet()
     {
         GameObject bullet = null;
+
+        audioManager.PlayShootSFX();
 
         for(int i = 0; i < bulletAmount; i++)
         {
             bullet = objectPoolManager.GetPooledObject("BulletShoot");
             bullet.SetActive(true);
 
-            //Instantiate(shootBullet);
             yield return new WaitForSeconds(0.1f);
         }
 
@@ -158,7 +152,8 @@ public class PlayerController : MonoBehaviour
     {
         GameObject bullet = objectPoolManager.GetPooledObject("BulletThrow");
         bullet.SetActive(true);
-        //Instantiate(throwBullet);
+
+        audioManager.PlayThrowSFX();
         yield return new WaitForSeconds(1.0f);
         isShooting = false;
         canShoot = true;

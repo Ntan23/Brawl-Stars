@@ -129,4 +129,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   bulletType: 0
   speed: 10
-  damage: 2.5
+  damage: 3

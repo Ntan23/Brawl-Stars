@@ -26,9 +26,12 @@ public class GameManager : MonoBehaviour
     private int playerJoinCount;
     [SerializeField] private HealthBarUI healthBarUI;
     [SerializeField] private PlayerWinUI[] playerWinUI;
+    private AudioManager audioManager;
 
     void Start()
     {
+        audioManager = AudioManager.Instance;
+
         player1Heath = 100;
         player2Health = 100;
 
@@ -40,11 +43,14 @@ public class GameManager : MonoBehaviour
 
     public void DecreasePlayerHealth(int playerIndex, float damage)
     {
-        if(playerIndex == 1 && player1Heath > 0) player1Heath -= damage;
-        if(playerIndex == 2 && player2Health > 0) player2Health -= damage;
+        if(gameState == State.IsPlaying)
+        {
+            if(playerIndex == 1 && player1Heath > 0) player1Heath -= damage;
+            if(playerIndex == 2 && player2Health > 0) player2Health -= damage;
 
-        healthBarUI.UpdateHealthBar(playerIndex);
-        CheckWhoWin();
+            healthBarUI.UpdateHealthBar(playerIndex);
+            CheckWhoWin();
+        }
     }
 
     void CheckWhoWin()
@@ -52,19 +58,21 @@ public class GameManager : MonoBehaviour
         if(player2Health <= 0)
         {
             playerWinUI[0].ShowWinUI();
+            audioManager.PlayWinSFX();
             gameState = State.GameOver;
         } 
 
         if(player1Heath <= 0) 
         {
             playerWinUI[1].ShowWinUI();
-            
+            audioManager.PlayWinSFX();
             gameState = State.GameOver;
         }
         
         if(player1Heath <= 0 && player2Health <= 0) 
         {
-            Debug.Log("Draw");
+            playerWinUI[2].ShowWinUI();
+            audioManager.PlayWinSFX();
             gameState = State.GameOver;
         }
     }

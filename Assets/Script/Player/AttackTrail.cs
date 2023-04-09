@@ -133,10 +133,7 @@ public class AttackTrail : MonoBehaviour
         }
     }
 
-    public void OnAim(InputAction.CallbackContext ctx)
-    {
-        inputVector = ctx.ReadValue<Vector2>();
-    }
+    public void OnAim(InputAction.CallbackContext ctx) => inputVector = ctx.ReadValue<Vector2>();
 
     public bool InAttackMode()
     {

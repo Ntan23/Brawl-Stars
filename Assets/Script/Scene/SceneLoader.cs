@@ -17,13 +17,7 @@ public static class SceneLoader
         SceneManager.LoadSceneAsync(Scene.LoadingScene.ToString());
     }
 
-    public static void SceneLoaderCallback()
-    {
-        SceneManager.LoadSceneAsync(targetScene.ToString());
-    }
+    public static void SceneLoaderCallback() => SceneManager.LoadSceneAsync(targetScene.ToString());
 
-    public static void ReloadScene()
-    {   
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    }
+    public static void ReloadScene() => SceneManager.LoadScene(SceneManager.GetActiveScene().name);
 }

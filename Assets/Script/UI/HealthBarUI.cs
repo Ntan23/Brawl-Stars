@@ -66,10 +66,7 @@ public class HealthBarUI : MonoBehaviour
         player2HealthUI.SetActive(false);
     }
 
-    public void HideAll()
-    {
-        gameObject.SetActive(false);
-    }
+    public void HideAll() => gameObject.SetActive(false);
 
     public void ShowAll()
     {

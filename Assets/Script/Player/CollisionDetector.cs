@@ -7,10 +7,7 @@ public class CollisionDetector : MonoBehaviour
     private PlayerController playerController;
     private bool canMove;
 
-    void Start()
-    {
-        playerController = GetComponent<PlayerController>();
-    }
+    void Start() => playerController = GetComponent<PlayerController>();
 
     public bool DetectCollision(Vector3 moveDirection)
     {

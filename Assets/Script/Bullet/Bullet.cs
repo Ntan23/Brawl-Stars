@@ -84,6 +84,7 @@ public class Bullet : MonoBehaviour
     private ObjectPoolManager objectPoolManager;
     private Rigidbody rb;
     private GameManager gm;
+    private AudioManager audioManager;
     #endregion
 
     void Start()
@@ -91,6 +92,7 @@ public class Bullet : MonoBehaviour
         rb = GetComponent<Rigidbody>();
         objectPoolManager = ObjectPoolManager.Instance;
         gm = GameManager.Instance;
+        audioManager = AudioManager.Instance;
 
         shootBullet = new ShootBullet();
         throwBullet = new ThrowBullet();
@@ -148,7 +150,13 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision collisionInfo)
     {
-        if(collisionInfo.gameObject.CompareTag("CanBeHit")) gameObject.SetActive(false);
+        if(collisionInfo.gameObject.CompareTag("CanBeHit")) 
+        {
+            gameObject.SetActive(false);
+
+            if(bulletType == Type.Throw) audioManager.PlayBulletThrowHitSFX();
+            if(bulletType == Type.Shoot) audioManager.PlayBulletShootHitSFX();
+        }
     }
 
     void OnTriggerEnter(Collider other)
@@ -156,11 +164,13 @@ public class Bullet : MonoBehaviour
         if(other.CompareTag("Player") && bulletType == Type.Shoot) 
         {
             gm.DecreasePlayerHealth(1, damage);
+            audioManager.PlayBulletShootHitSFX();
             gameObject.SetActive(false);
         }
         if(other.CompareTag("Player2") && bulletType == Type.Throw) 
         {
             gm.DecreasePlayerHealth(2, damage);
+            audioManager.PlayBulletThrowHitSFX();
             gameObject.SetActive(false);
         }
     }

@@ -15,7 +15,7 @@ public class PlayerWinUI : MonoBehaviour
         });
 
         mainMenuButton.onClick.AddListener(() => {
-            Debug.Log("Main Menu");
+            SceneLoader.Load(SceneLoader.Scene.MainMenu);
         });
 
         gameObject.SetActive(false);

@@ -13,13 +13,7 @@ public class PlayerAnimationControl : MonoBehaviour
         playerController = GetComponentInParent<PlayerController>();
     }
 
-    void Update()
-    {
-        SetAnimation(playerController.GetState());
-    }
+    void Update() => SetAnimation(playerController.GetState());
 
-    private void SetAnimation(int value)
-    {
-        animator.SetInteger("State",value);
-    }
+    private void SetAnimation(int value) => animator.SetInteger("State",value);
 }
