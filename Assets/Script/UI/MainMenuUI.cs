@@ -8,6 +8,7 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button playButton;
     [SerializeField] private Button settingsButton;
     [SerializeField] private Button quitButton;
+    [SerializeField] private Settings settings;
 
     void Start()
     {
@@ -16,7 +17,7 @@ public class MainMenuUI : MonoBehaviour
         });
 
         settingsButton.onClick.AddListener(() => {
-            Debug.Log("Settings");
+            settings.ShowSettings();
         });
 
         quitButton.onClick.AddListener(() => {
